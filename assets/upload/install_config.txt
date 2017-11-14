@@ -1,0 +1,47 @@
+# config eportal #
+1. databse
+1.1 masuk database
+  c: mysql -u root -p <enter>
+  masukan password <enter>
+1.2. create database
+  c: create databes bindb; <enter>
+1.3. keluar dr mysql
+  c: quit; <enter>
+1.4. import database
+  c: mysql -u root -p bindb < bindb.sql <enter>
+  masukan password <enter>
+
+2. config date time
+2.1. update file index.php
+  F: ./index.php
+  tambahkan script dibawah
+  if( ! ini_get('date.timezone') )
+  {
+     date_default_timezone_set('GMT');
+  } 
+
+3. file
+3.1. update file database.php
+  F: ./application/config/database.php
+  cari text
+  'hostname' => 'localhost',
+  'username' => 'root',
+  'password' => '',     ---> tambahin password**
+  'database' => 'bindb',
+3.2. update file config.php
+  F: ./forum/chat/lib/config.php
+  cari text
+  // Database hostname:
+  $config['dbConnection']['host'] = 'localhost';
+  // Database username:
+  $config['dbConnection']['user'] = 'root';
+  // Database password:
+  $config['dbConnection']['pass'] = '';   ---> tambahin password**
+  // Database name:
+  $config['dbConnection']['name'] = 'bindb';
+
+4. update httpd.conf
+4.1. cari text
+  <directory "/var/www/html">
+  AllowOverride None -->ganti dengan AllowOverride None
+4.2 restart httpd
