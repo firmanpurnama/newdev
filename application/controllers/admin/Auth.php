@@ -2,15 +2,21 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Auth extends CI_Controller 
 {
+   var $content_header;
    var $error_msg;
+   var $breadcrumb;
    public function __construct()
    {
       parent::__construct();
       $this->load->model('users_model');
+      $this->content_header = "Welcome Admin";
+      $this->breadcrumb = array(array('url'=>'admin/auth', 'title'=>'Admin'));
    }
 
    public function index(){
       date_default_timezone_set('Asia/Jakarta');
+      array_push($this->breadcrumb, array('url'=>'auth/logout', 'title'=>'Logout'));
+      
       $config = array(
                array('field' => 'email', 'label' => 'email', 'rules' => 'required'),
                array('field' => 'passwd', 'label' => 'Password', 'rules' => 'required')
@@ -36,20 +42,24 @@ class Auth extends CI_Controller
 
             $data = array('last_login'=> date('Y-m-d H:i:s'));
             $this->users_model->update($user->id, $data);
-
-            redirect('admin/users');
+            //redirect('admin/users');
          }else{
             $this->error_msg = 'salah user name atau password';
          }
       }else{
          $this->error_msg = validation_errors();
       }
-      $this->my_template->login('admin/login');
+
+      if ($this->session->userdata('user_id') == ''){
+         $this->my_template->login('admin/login');
+      }else{
+         $this->my_template->admin_template('admin/admin_default', false);
+      }
    }
 
    public function logout(){
       $this->session->sess_destroy();
-      redirect('admin/auth');
-      //$this->my_template->loginDisplay('admin/login');
+      //redirect('admin/auth');
+      $this->my_template->login('admin/login');
    }
 }

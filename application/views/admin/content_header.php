@@ -1,7 +1,7 @@
 <div class="row">
    <div class="col-lg-12">
        <h1 class="page-header"><?=$this->content_header;?></h1>
-		<ol class="breadcrumb">
+		<ol class="breadcrumb breadcrumb-text">
 			<!-- <li class="breadcrumb-item">
 				<a href="index.html">Home</a>
 			</li>

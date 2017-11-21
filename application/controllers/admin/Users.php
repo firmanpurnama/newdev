@@ -52,7 +52,7 @@ class Users extends CI_Controller
 
    public function search($page=null)
    {
-      array_push($this->breadcrumb, array('url'=>'admin/search', 'title'=>'Search'));
+      array_push($this->breadcrumb, array('url'=>'admin/users/search', 'title'=>'Search'));
 
       $config = array(
             array('field'=>'search', 'label'=>'search', 'rules'=>'required')
@@ -79,7 +79,7 @@ class Users extends CI_Controller
 
    public function add()
    {
-      array_push($this->breadcrumb, array('url'=>'admin/add', 'title'=>'Add'));
+      array_push($this->breadcrumb, array('url'=>'admin/users/add', 'title'=>'Add'));
       $this->action_form = base_url('admin/users/save');
       $data['user_groups'] = $this->group_model->get()->result();
       $this->my_template->admin_template('admin/user/form', $data);
@@ -87,7 +87,7 @@ class Users extends CI_Controller
    
    public function update($id)
    {
-      array_push($this->breadcrumb, array('url'=>'admin/update', 'title'=>'Update'));
+      array_push($this->breadcrumb, array('url'=>'admin/users/update', 'title'=>'Update'));
       $this->action_form = base_url('admin/users/save/'.$id);
       $data['user_groups'] = $this->group_model->get()->result();
       $rslt = $this->users_model->get_id($id)->row();
@@ -140,10 +140,10 @@ class Users extends CI_Controller
       }
 
       if (is_null($id)){
-         array_push($this->breadcrumb, array('url'=>'admin/Add', 'title'=>'Add'));
+         array_push($this->breadcrumb, array('url'=>'admin/users/Add', 'title'=>'Add'));
          $this->action_form = base_url('admin/users/save/');
       }else{
-         array_push($this->breadcrumb, array('url'=>'admin/update/'.$id, 'title'=>'Update'));
+         array_push($this->breadcrumb, array('url'=>'admin/users/update/'.$id, 'title'=>'Update'));
          $this->action_form = base_url('admin/users/save/'.$id);
       }
 

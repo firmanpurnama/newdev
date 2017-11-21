@@ -51,7 +51,7 @@
                         <h3 class="panel-title">Please Sign In</h3>
                     </div>
                     <div class="panel-body">
-                        <form action="" method="post" role="form">
+                        <form action="<?=base_url('admin/auth')?>" method="post" role="form">
                             <fieldset>
                                 <div class="form-group">
                                     <input type="email" class="form-control" placeholder="E-mail" name="email" required autofocus>
