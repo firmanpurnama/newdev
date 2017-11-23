@@ -22,11 +22,17 @@ class Main_menu extends CI_Controller
    var $backend;
    var $frontend;
    var $menu_order;
+
+   var $sidebar_main_menu;
+   var $sidebar_menu;
+
    public function __construct()
    {
       parent::__construct();
       date_default_timezone_set('Asia/Jakarta');
       $this->my_lib->cekAuth();
+      $this->sidebar_main_menu = $this->my_lib->sidebar_main_menu();
+      $this->sidebar_menu = $this->my_lib->sidebar_menu();
       $this->load->model(array('main_menu_model'));
       $this->content_header = "Main menu";
       $this->breadcrumb = array(array('url'=>'admin/main_menu', 'title'=>'Main menu'));

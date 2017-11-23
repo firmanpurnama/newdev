@@ -74,7 +74,7 @@
 
                <div class="form-group">
                   <div class="col-sm-12">
-                     <a href="<?php echo base_url('admin/main_menu');?>" class="btn btn-sm btn-default btn-flat pull-left">Cancel</a>
+                     <a href="<?php echo base_url('admin/menu');?>" class="btn btn-sm btn-default btn-flat pull-left">Cancel</a>
                      <input type="submit" value="Submit" class="btn btn-sm btn-default btn-flat pull-right">
                   </div>
                </div>

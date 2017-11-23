@@ -33,7 +33,7 @@ class Menu_model extends CI_Model
    {
       $this->db->select('menu.*, main_menu.main_menu_name');
       $this->db->join('main_menu', 'menu.main_menu_id=main_menu.id', 'LEFT');
-      $this->db->where('id', $id);
+      $this->db->where('menu.id', $id);
       return $this->db->get('menu');
    }
 

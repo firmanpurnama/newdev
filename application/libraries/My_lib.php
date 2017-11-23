@@ -22,16 +22,13 @@ class My_lib
 	function sidebar_main_menu()
 	{
 		$this->_ci->load->model('group_menu_model');
-		return $this->_ci->group_menu_model->getGroupId($this->_ci->session->userdata('user_group'));
-		/*$this->_ci->load->model('main_menu_model');
-		$where = array('back_end' => 1);
-		return $this->_ci->main_menu_model->getWhere($where);*/
+		return $this->_ci->group_menu_model->get(null, null, array('group_id'=>$this->_ci->session->userdata('user_group')))->result();
 	}
 
 	function sidebar_menu()
 	{
 		$this->_ci->load->model('menu_model');
-		return $this->_ci->menu_model->get();
+		return $this->_ci->menu_model->get(null, null, array('menu.back_end'=>1))->result();
 	}
 
 	function main_menu()

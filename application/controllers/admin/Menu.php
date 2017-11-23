@@ -23,11 +23,16 @@ class Menu extends CI_Controller
    var $backend;
    var $frontend;
 
+   var $sidebar_main_menu;
+   var $sidebar_menu;
+
    public function __construct()
    {
       parent::__construct();
       date_default_timezone_set('Asia/Jakarta');
       $this->my_lib->cekAuth();
+      $this->sidebar_main_menu = $this->my_lib->sidebar_main_menu();
+      $this->sidebar_menu = $this->my_lib->sidebar_menu();
       $this->load->model(array('main_menu_model','menu_model'));
       $this->content_header = "Menu";
       $this->breadcrumb = array(array('url'=>'admin/menu', 'title'=>'Menu'));
@@ -55,7 +60,7 @@ class Menu extends CI_Controller
    public function search($page=null)
    {
       array_push($this->breadcrumb, array('url'=>'admin/menu/search', 'title'=>'Search'));
-      $column = 'main_menu_name';
+      $column = 'menu_name';
       
       $config = array(
             array('field'=>'search', 'label'=>'search', 'rules'=>'required')
@@ -92,7 +97,7 @@ class Menu extends CI_Controller
    public function add()
    {
       array_push($this->breadcrumb, array('url'=>'admin/menu/add', 'title'=>'Add'));
-      $condition = array('menu_type'=>0);
+      $condition = array('menu_type'=>1);
       $data['main_menu'] = $this->main_menu_model->get(null, null, $condition)->result();
       $this->action_form = base_url('admin/menu/save');
       $this->my_template->admin_template('admin/menu/form', $data);
@@ -101,7 +106,7 @@ class Menu extends CI_Controller
    public function update($id)
    {
       array_push($this->breadcrumb, array('url'=>'admin/menu/update/'.$id, 'title'=>'Update'));
-      $condition = array('menu_type'=>0);
+      $condition = array('menu_type'=>1);
       $data['main_menu'] = $this->main_menu_model->get(null, null, $condition)->result();
       $this->action_form = base_url('admin/menu/save/'.$id);
       $result = $this->menu_model->get_id($id)->row();

@@ -13,10 +13,15 @@ class Users_group extends CI_Controller
    var $gid;
    var $action_form;
    var $error_msg;
+   var $breadcrumb;
+   var $sidebar_main_menu;
+   var $sidebar_menu;
    public function __construct()
    {
       parent::__construct();
       $this->my_lib->cekAuth();
+      $this->sidebar_main_menu = $this->my_lib->sidebar_main_menu();
+      $this->sidebar_menu = $this->my_lib->sidebar_menu();
       //$this->code_start = $this->benchmark->mark('code_start');
       $this->load->helper('cookie');
       if (get_cookie('search')) {
@@ -29,11 +34,12 @@ class Users_group extends CI_Controller
 
       $this->load->model('group_model');
       $this->content_header = "User Group";
+      $this->breadcrumb = array(array('url'=>'admin/group_menu', 'title'=>'Group Menu'));
    }
 
    public function index($page=null)
    {
-      $this->output->enable_profiler(TRUE);
+      //$this->output->enable_profiler(TRUE);
       $this->dc('search'); //buang cookie
             
       //set_cookie

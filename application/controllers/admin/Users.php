@@ -8,22 +8,27 @@ class Users extends CI_Controller
    var $start_page = 0;
    var $end_page = 1;
    var $number_page = 1;
+
    var $action_form;
    var $error_msg;
    var $keyword;
    var $condition;
+   var $breadcrumb;
 
    var $user_name;
    var $user_email;
    var $user_group_name;
    var $user_group_id;
 
-   var $breadcrumb;
+   var $sidebar_main_menu;
+   var $sidebar_menu;
 
    public function __construct()
    {
       parent::__construct();
       $this->my_lib->cekAuth();
+      $this->sidebar_main_menu = $this->my_lib->sidebar_main_menu();
+      $this->sidebar_menu = $this->my_lib->sidebar_menu();
       $this->load->model(array('users_model','group_model'));
       $this->set_default_limit();
       $this->set_keyword();
