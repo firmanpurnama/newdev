@@ -2,12 +2,16 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Auth extends CI_Controller 
 {
+   var $sidebar_main_menu;
+   var $sidebar_menu;
    var $content_header;
    var $error_msg;
    var $breadcrumb;
    public function __construct()
    {
       parent::__construct();
+      $this->sidebar_main_menu = $this->my_lib->sidebar_main_menu();
+      $this->sidebar_menu = $this->my_lib->sidebar_menu();
       $this->load->model('users_model');
       $this->content_header = "Welcome Admin";
       $this->breadcrumb = array(array('url'=>'admin/auth', 'title'=>'Admin'));

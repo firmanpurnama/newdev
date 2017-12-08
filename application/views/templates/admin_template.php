@@ -22,6 +22,7 @@
 
     <!-- Custom Fonts -->
     <link href="<?php echo base_url('assets/vendor/font-awesome/css/font-awesome.min.css');?>" rel="stylesheet" type="text/css">
+    <link href="<?php echo base_url('assets/vendor/ckeditor/content.css');?>" rel="stylesheet" type="text/css">
     <link href="<?php echo base_url('assets/dist/css/custom.css');?>" rel="stylesheet" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -80,7 +81,8 @@
     <script src="<?php echo base_url('assets/vendor/metisMenu/metisMenu.min.js');?>"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="<?php echo base_url('assets/dist/js/sb-admin-2.js');?>"></script>
+    <script src="<?php echo base_url('assets/dist/js/sb-admin-2.js');?>"></script><!-- Custom Theme JavaScript -->
+    <script src="<?php echo base_url('assets/vendor/ckeditor/ckeditor.js');?>"></script>
 
     <script type="text/javascript">
     var openFile = function(event, index) {
@@ -118,6 +120,15 @@
       CKEDITOR.replace(elem);
       CKEDITOR.add;
    }
+   </script>
+
+   <script type="text/javascript">
+     $(document).ready(function(){
+      $('textarea').each(function(){
+            CKEDITOR.replace( $(this).attr('id'));
+            CKEDITOR.add;
+        });
+     });
    </script>
 
 </body>

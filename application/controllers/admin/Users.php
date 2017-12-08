@@ -8,6 +8,7 @@ class Users extends CI_Controller
    var $start_page = 0;
    var $end_page = 1;
    var $number_page = 1;
+   var $show_page = 10;
 
    var $action_form;
    var $error_msg;
@@ -30,20 +31,24 @@ class Users extends CI_Controller
       $this->sidebar_main_menu = $this->my_lib->sidebar_main_menu();
       $this->sidebar_menu = $this->my_lib->sidebar_menu();
       $this->load->model(array('users_model','group_model'));
-      $this->set_default_limit();
-      $this->set_keyword();
       $this->content_header = "Users";
       $this->breadcrumb = array(array('url'=>'admin/users', 'title'=>'Users'));
    }
 
    public function index($page=null)
    {
+      $this->set_default_limit();
       if (is_null($page)) {
          $rslt = $this->users_model->get()->result();
       }else{
+         $this->get_default_limit();
          $this->set_default_start($page);
          $rslt = $this->users_model->get($this->default_limit, $this->default_start)->result();
       }
+
+      //paging
+      $num_row = $this->users_model->get_count();
+      $this->paging($num_row, $page);
       
       /*
       $this->load->helper('cookie');
@@ -65,9 +70,11 @@ class Users extends CI_Controller
       $this->form_validation->set_rules($config);
       if ($this->form_validation->run() == TRUE) {
          $this->condition = "user_name = ".$this->keyword." OR email = ".$this->keyword;
+         $this->set_keyword();
       }else{
          $this->error_msg = validation_errors();
       }
+      $this->get_keword();
       
       if (is_null($page)) {
          $rslt = $this->users_model->get(null, $page, $this->condition)->result();
@@ -80,7 +87,12 @@ class Users extends CI_Controller
       $this->my_template->admin_template('admin/user/index', $data);
    }
 
-   public function detail($id){}
+   public function detail($id)
+   {
+      array_push($this->breadcrumb, array('url'=>'admin/users/detail/'.$id, 'title'=>'Detail'));
+      $data['user'] = $this->users_model->get($id)->row();
+      $this->my_template->admin_template('admin/user/detail', $data);
+   }
 
    public function add()
    {
@@ -92,7 +104,7 @@ class Users extends CI_Controller
    
    public function update($id)
    {
-      array_push($this->breadcrumb, array('url'=>'admin/users/update', 'title'=>'Update'));
+      array_push($this->breadcrumb, array('url'=>'admin/users/update/'.$id, 'title'=>'Update'));
       $this->action_form = base_url('admin/users/save/'.$id);
       $data['user_groups'] = $this->group_model->get()->result();
       $rslt = $this->users_model->get_id($id)->row();
@@ -164,30 +176,73 @@ class Users extends CI_Controller
 
    public function set_default_limit()
    {
-      $this->load->helper('cookie');
       if (!empty($this->input->post('default_limit'))) {
-         set_cookie('default_limit', $this->input->post('default_limit'), '3600', base_url(), 'admin/users');
+         $this->session->set_flashdata('default_limit', $this->input->post('search'), 300);
+         //set_cookie('default_limit', $this->input->post('default_limit'), '3600', base_url(), 'admin/main_menu');
       }
+   }
 
-      if (get_cookie('default_limit')) {
-         $this->default_limit = get_cookie('limit');
+   public function get_default_limit()
+   {
+      if ($this->session->has_userdata('default_limit')) {
+         $this->default_limit = $this->default_limit = $this->session->flashdata('default_limit');
+      }
+   }
+
+   public function delete_default_limit()
+   {
+      if ($this->session->has_userdata('default_limit')) {
+         $this->session->default_limit('default_limit');
       }
    }
 
    public function set_default_start($page)
    {
+      if ($this->session->has_userdata('default_limit')) {
+         $this->default_limit = $this->default_limit = $this->session->flashdata('default_limit');
+      }
       $this->default_start = ($page - 1) * $this->default_limit;
    }
 
    public function set_keyword()
    {
-      $this->load->helper('cookie');
       if (!empty($this->input->post('search'))) {
-         set_cookie('keyword', $this->input->post('search'), '3600', base_url(), 'admin/users');
+         $this->session->set_flashdata('keyword', $this->input->post('search'), 300);
+         //$this->session->set_userdata('keyword', $this->input->post('search'));
+      }
+   }
+
+   public function get_keword()
+   {
+      if ($this->session->has_userdata('keyword')) {
+         $this->keyword = $this->session->flashdata('keyword');
+         //$this->keyword = $this->session->userdata('keyword');
+      }
+   }
+
+   public function delete_keyword()
+   {
+      if ($this->session->has_userdata('keyword')) {
+         $this->session->unset_userdata('keyword');
+      }
+   }
+
+   public function paging($num_row, $page)
+   {
+      $this->number_page = ceil($num_row / $this->default_limit);
+      if (!is_null($page)){
+         $this->start_page = $page - $this->show_page;
+         $this->end_page = ($page - 1) + $this->show_page;
+      }else{
+         $this->end_page = ($this->start_page - 1) + $this->show_page;
       }
 
-      if (get_cookie('keyword')) {
-         $this->keyword = get_cookie('keyword');
+      if ($this->start_page < 1) {
+         $this->start_page = 1;
+      }
+
+      if ($this->end_page > $this->number_page) {
+         $end_page = $this->number_page;
       }
    }
 }
