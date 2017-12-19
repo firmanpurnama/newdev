@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Kemasan extends CI_Controller 
+class Barang extends CI_Controller 
 {
    var $content_header;
    var $default_limit = 15;
@@ -16,9 +16,14 @@ class Kemasan extends CI_Controller
    var $condition;
    var $breadcrumb;
 
-   var $id_kemasan;
-   var $nama_kemasan;
-   var $isi;
+   var $id_barang;
+   var $jenis;
+   var $kemasan;
+   var $product_name;
+   var $hpp;
+   var $harga;
+   var $jumlah;
+   var $detail;
 
    var $sidebar_main_menu;
    var $sidebar_menu;
@@ -30,9 +35,9 @@ class Kemasan extends CI_Controller
       $this->my_lib->cekAuth();
       $this->sidebar_main_menu = $this->my_lib->sidebar_main_menu();
       $this->sidebar_menu = $this->my_lib->sidebar_menu();
-      $this->load->model(array('kemasan_model'));
-      $this->content_header = "kemasan";
-      $this->breadcrumb = array(array('url'=>'admin/kemasan', 'title'=>'Kemasan'));
+      $this->load->model(array('barang_model','jenis_model','kemasan_model'));
+      $this->content_header = "Barang";
+      $this->breadcrumb = array(array('url'=>'admin/barang', 'title'=>'Barang'));
    }
 
    public function index($page=NULL)
@@ -41,23 +46,23 @@ class Kemasan extends CI_Controller
       if (!is_null($page)  and is_int($page)) {
          $this->get_default_limit();
          $this->set_default_start($page);
-         $rslt = $this->kemasan_model->get($this->default_limit, $this->default_start)->result();
+         $rslt = $this->barang_model->get($this->default_limit, $this->default_start)->result();
       }else{
-         $rslt = $this->kemasan_model->get()->result();
+         $rslt = $this->barang_model->get()->result();
       }
 
       //paging
-      $num_row = $this->kemasan_model->get_count();
+      $num_row = $this->barang_model->get_count();
       $this->paging($num_row, $page);
 
-      $data['kemasan'] = $rslt;
-      $this->my_template->admin_template('admin/kemasan/index', $data);
+      $data['barang'] = $rslt;
+      $this->my_template->admin_template('admin/barang/index', $data);
    }
 
    public function search($page=null)
    {
-      array_push($this->breadcrumb, array('url'=>'admin/kemasan/search', 'title'=>'Search'));
-      $column = array('nama_kemasan', 'detail');
+      array_push($this->breadcrumb, array('url'=>'admin/barang/search', 'title'=>'Search'));
+      $column = array('product_name', 'detail');
       $result = array();
       
       $config = array(
@@ -76,77 +81,97 @@ class Kemasan extends CI_Controller
       }
 
       if (!empty($this->keyword)){
-         $result = $this->kemasan_model->search($column, $this->keyword, $this->default_limit, $this->default_start)->result();
+         $result = $this->barang_model->search($column, $this->keyword, $this->default_limit, $this->default_start)->result();
       }
 
-      $data['kemasan'] = $result;
-      $this->my_template->admin_template('admin/kemasan/index', $data);
+      $data['barang'] = $result;
+      $this->my_template->admin_template('admin/barang/index', $data);
    }
 
    public function detail($id)
    {
-      array_push($this->breadcrumb, array('url'=>'admin/kemasan/detail/'.$id, 'title'=>'Detail'));
-      $data['jenis'] = $this->kemasan_model->get_id($id)->row();
-      $this->my_template->admin_template('admin/kemasan/detail', $data);
+      array_push($this->breadcrumb, array('url'=>'admin/barang/detail/'.$id, 'title'=>'Detail'));
+      $data['jenis'] = $this->barang_model->get_id($id)->row();
+      $this->my_template->admin_template('admin/barang/detail', $data);
    }
 
    public function add()
    {
       array_push($this->breadcrumb, array('url'=>'admin/jenis/add', 'title'=>'Add'));
-      $this->action_form = base_url('admin/kemasan/save');
-      $this->my_template->admin_template('admin/kemasan/form', false);
+      $data['list_jenis'] = $this->jenis_model->get()->result();
+      $data['list_kemasan'] = $this->kemasan_model->get()->result();
+      $this->action_form = base_url('admin/barang/save');
+      $this->my_template->admin_template('admin/barang/form', $data);
    }
 
    public function update($id)
    {
-      array_push($this->breadcrumb, array('url'=>'admin/kemasan/update/'.$id, 'title'=>'Update'));
-      $this->action_form = base_url('admin/kemasan/save/'.$id);
-      $result = $this->kemasan_model->get_id($id)->row();
-      $this->id_kemasan = $result->id;
-      $this->nama_kemasan = $result->nama_kemasan;
-      $this->isi = $result->isi;
-      $this->my_template->admin_template('admin/kemasan/form', false);
+      array_push($this->breadcrumb, array('url'=>'admin/barang/update/'.$id, 'title'=>'Update'));
+      $this->action_form = base_url('admin/barang/save/'.$id);
+      $data['list_jenis'] = $this->jenis_model->get()->result();
+      $data['list_kemasan'] = $this->kemasan_model->get()->result();
+      $result = $this->barang_model->get_id($id)->row();
+      $this->id_barang = $result->id;
+      $this->jenis = $result->jenis;
+      $this->kemasan = $result->kemasan;
+      $this->product_name = $result->product_name;
+      $this->hpp = $result->hpp;
+      $this->harga = $result->harga;
+      $this->jumlah = $result->jumlah;
+      $this->detail = $result->detail;
+      $this->my_template->admin_template('admin/barang/form', $data);
    }
 
    public function save($id=null)
    {
       $config = array(
-            array('field'=>'nama_kemasan', 'label'=>'nama kemasan', 'rules'=>'required')
+            array('field'=>'jenis', 'label'=>'jenis produk', 'rules'=>'required'),
+            array('field'=>'kemasan', 'label'=>'kemasan produk', 'rules'=>'required'),
+            array('field'=>'product_name', 'label'=>'nama produk', 'rules'=>'required')
          );
       $this->form_validation->set_rules($config);
       if ($this->form_validation->run() == TRUE){
          $data_in = array(
-               'nama_kemasan'=>$this->input->post('nama_kemasan'),
-               'isi'=>$this->input->post('isi'),
-               'tanggal'=>date("Y-m-d H:i:s")
+               'jenis'=>$this->input->post('jenis'),
+               'kemasan'=>$this->input->post('kemasan'),
+               'product_name'=>$this->input->post('product_name'),
+               'hpp'=>$this->input->post('hpp'),
+               'harga'=>$this->input->post('harga'),
+               'jumlah'=>$this->input->post('jumlah'),
+               'detail'=>$this->input->post('detail')
             );
          if (is_null($id)){
-            $this->kemasan_model->add($data_in);
+            $this->barang_model->add($data_in);
          }else{
-            $this->kemasan_model->update($id, $data_in);
+            $this->barang_model->update($id, $data_in);
          }
          redirect('admin/kemasan');
       }else{
-         $this->nama_jenis = $this->input->post('nama_kemasan');
-         $this->isi = $this->input->post('isi');
+         $this->jenis = $this->input->post('jenis');
+         $this->kemasan = $this->input->post('kemasan');
+         $this->product_name = $this->input->post('product_name');
+         $this->hpp = $this->input->post('hpp');
+         $this->harga = $this->input->post('harga');
+         $this->jumlah = $this->input->post('jumlah');
+         $this->detail = $this->input->post('detail');
          $this->error_msg = validation_errors(); // validasi error
       }
 
       if (is_null($id)){
-         array_push($this->breadcrumb, array('url'=>'admin/kemasan/Add', 'title'=>'Add'));
-         $this->action_form = base_url('admin/kemasan/save/');
+         array_push($this->breadcrumb, array('url'=>'admin/barang/Add', 'title'=>'Add'));
+         $this->action_form = base_url('admin/barang/save/');
       }else{
-         array_push($this->breadcrumb, array('url'=>'admin/kemasan/update/'.$id, 'title'=>'Update'));
-         $this->action_form = base_url('admin/kemasan/save/'.$id);
+         array_push($this->breadcrumb, array('url'=>'admin/barang/update/'.$id, 'title'=>'Update'));
+         $this->action_form = base_url('admin/barang/save/'.$id);
       }
 
-      $this->my_template->admin_template('admin/kemasan/form', $data);
+      $this->my_template->admin_template('admin/barang/form', $data);
    }
 
    public function delete($id)
    {
-      $this->kemasan_model->delete($id);
-      redirect('admin/kemasan');
+      $this->barang_model->delete($id);
+      redirect('admin/barang');
    }
 
    public function set_default_limit()

@@ -47,3 +47,31 @@ CREATE TABLE `dev_group_menu` (
   `main_menu_id` int(3) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
+
+CREATE TABLE `dev_jenis` (
+  `id` int(5) unsigned NOT NULL AUTO_INCREMENT,
+  `nama_jenis` varchar(150) NOT NULL,
+  `detail` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
+
+CREATE TABLE `dev_kemasan` (
+  `id` int(5) unsigned NOT NULL AUTO_INCREMENT,
+  `nama_kemasan` varchar(100) NOT NULL,
+  `isi` varchar(150),
+  `tanggal` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
+
+CREATE TABLE `dev_barang` (
+  `id` int(5) unsigned NOT NULL AUTO_INCREMENT,
+  `jenis` int(10) NOT NULL,
+  `kemasan` int(10) NOT NULL,
+  `product_name` varchar(150) NOT NULL,
+  `hpp` int(10) DEFAULT 0,
+  `harga` int(10) DEFAULT 0,
+  `jumlah` int(10) DEFAULT 0,
+  `jumlah` int(10) DEFAULT 0,
+  `detail` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
